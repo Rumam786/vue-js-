@@ -1,48 +1,57 @@
 <template>
     <div>
-        <p v-if="error.length">
-            <b>please correct the following</b>
-            <ul>
-                <li v-for="e in error" v-bind:key="e.id">{{e.id}}</li>
-            </ul>
-        </p>
-        <h1>Hello from login</h1>
-        <form @submit="login">
-        <input type="text" placeholder="enter name" v-model="name"><br><br>
-        <input type="password" placeholder="enter password" v-model="password"><br><br>
-        <button type="submit">login</button>
-        </form>
+        <h1>Post component</h1>
+        <div>
+            <table border="2px">
+                <tr>
+                    <td>ID</td>
+                    <td>Username</td>
+                    <td>Name</td>
+                    <td>Email</td>
+                    <td>Webiste</td>
+                    <td>Phone</td>
+                </tr>
+                 <tr v-for="item in list" v-bind:key="item.id">
+                     <td>{{item.id}}</td>
+                     <td>{{item.username}}</td>
+                    <td>{{item.name}}</td>
+                    <td>{{item.email}}</td>
+                    <td>{{item.website}}</td>
+                    <td>{{item.phone}}</td>
+                    <td><button v-on:click="deleteUser(user.id)">Delete</button></td>
+                </tr>
+            </table>
+        </div><br><br>
+        <router-link to="/">Go TO Home</router-link>
     </div>
 </template>
 
 <script>
+import Vue from 'vue';
+import VueAxios from 'vue-axios';
+import axios from 'axios';
+Vue.use(VueAxios,axios)
     export default {
-        name:'login',
+        name:'users',
         data() {
             return {
-                error: [],
-                name: null,
-                password: null
+                users: null
             }
         },
         methods: {
-            login(e) {
-                if(this.name && this.password)
-                {
-                    console.warn("no error")
-                    return true
-                }
-                if(this.name)
-                {
-                    this.error.push("username is required");
-                }
-                if(this.password)
-                {
-                    this.error.push("password is required");
-                }
-                 console.warn("hello", this.error);
-                e.preventDefault();         
+            getusers() {
+                this.axios.get('https://jsonplaceholder.typicode.com/users').then((result)=>{
+                    console.warn(result)
+                    this.users=result.data
+                })
+            },
+            deleteUser(id)
+            {
+                this.axios.delete('https://jsonplaceholder.typicode.com/users/'+id).then((result)=>{
+                    console.warn(result)
+                    this.users=result.data
+                })    
             }
-        },
+        }
     }
 </script>
